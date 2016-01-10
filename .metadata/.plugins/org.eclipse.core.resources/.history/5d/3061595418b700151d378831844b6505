@@ -1,0 +1,64 @@
+package iut.chat;
+/**
+ * <p>
+ * Nom de l'application : STAGIO gestionnaire de stage
+ * </p>
+ * <p>
+ * Description : gestionnaire de stage
+ * </p>
+ * 
+ * @author Johnathan, Joe, Pierre et Thibault
+ * @version 1.0
+ */
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+class SplashWindow extends JWindow {
+
+
+    public SplashWindow(final Frame f, int waitTime) {
+        super(f);
+
+        JLabel jlabel = new JLabel("");
+        jlabel.setIcon(new ImageIcon("C:/Users/johnathan/Desktop/DUT/PROG WEB/Site de Gestion de Stage sans CMS/images/icone.ico"));
+        getContentPane().add(jlabel, BorderLayout.CENTER);
+        pack();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension labelSize = jlabel.getPreferredSize();
+        setLocation(screenSize.width / 2 - (labelSize.width / 2),
+                screenSize.height / 2 - (labelSize.height / 2));
+
+        addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                setVisible(false);
+                dispose();
+            }
+        });
+
+
+        final int pause = waitTime;
+
+        final Runnable closeRunner = new Runnable() {
+            public void run() {
+                setVisible(false);
+                dispose();
+                f.setVisible(true);
+            }
+        };
+
+
+        Runnable waitRunner = new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(pause);
+                    SwingUtilities.invokeAndWait(closeRunner);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        setVisible(true);
+        Thread splashThread = new Thread(waitRunner, "SplashThread");
+        splashThread.start();
+    }
+}
