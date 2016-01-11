@@ -47,7 +47,7 @@ public class ControlAgendaViewPanel extends JPanel {
 		this.contentPane = contentPane;
 		JPanel commandPanel = new JPanel();
 		JPanel bottom = new JPanel();
-		JButton btnWebSite = new JButton();
+		JButton btnWebSite = new JButton("publish in the website");
 		commandPanel.setLayout(new BoxLayout(commandPanel, BoxLayout.PAGE_AXIS));
 		Calendar calendar = Calendar.getInstance();
         SpinnerNumberModel dateModel = new SpinnerNumberModel(calendar.get(Calendar.YEAR),

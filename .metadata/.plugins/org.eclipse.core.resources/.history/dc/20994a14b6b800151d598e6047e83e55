@@ -1,0 +1,140 @@
+package iut.io;
+
+/**
+ * <p>
+ * Nom de l'application : STAGIO gestionnaire de stage
+ * </p>
+ * <p>
+ * Description : gestionnaire de stage
+ * </p>
+ * 
+ * @author Johnathan, Joe, Pierre et Thibault
+ * @version 1.0
+ */
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+import iut.app.CommandLineParser;
+import iut.app.ExamEvent;
+import iut.app.Person;
+
+import java.beans.XMLEncoder;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+//EX 1 Completer la classe 
+
+public class XMLProjectWriter {
+
+	public XMLProjectWriter() {
+
+	}
+
+	public void save(LinkedList<ExamEvent> data, java.io.File xmlfile) throws TransformerException, ParserConfigurationException {
+		/*
+		 * CommandLineParser clp = new CommandLineParser(); String[] FILE =
+		 * null; clp.parse(FILE); StreamResult result = new StreamResult(new
+		 * File("C:/Users/johnathan/Documents/GitHub/iutjava/train/file.xml"));
+		 * StreamResult result1 = new StreamResult(System.out);
+		 */
+		/**
+		 * 
+		 */
+		XMLEncoder encoder;
+		try {
+			encoder = new XMLEncoder(new FileOutputStream(xmlfile));
+			encoder.writeObject(data);
+			encoder.flush();
+			encoder.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		// récupération d'une instance de la classe "DocumentBuilderFactory"
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		// création d'un parseur
+		final DocumentBuilder builder = factory.newDocumentBuilder();
+		// création d'un Document
+		final Document document = builder.newDocument();
+		
+
+		final Element racine = document.createElement("agenda");
+		document.appendChild(racine);
+
+		for (ExamEvent evtcurrent : data) {
+
+			final Element evt = document.createElement("event");
+			evt.setAttribute("date",
+					String.valueOf(evtcurrent.getDate().getTime()));
+			evt.setAttribute("classroom", evtcurrent.getClassroom()
+					.getClassRoomNumber());
+
+			// Ajout etudiant
+			final Element student = getPersonElement(document,
+					evtcurrent.getStudent());
+			evt.appendChild(student);
+
+			// Ajout jurys
+			final Element evtJurys = document.createElement("jurys");
+			for (Person person : evtcurrent.getJury()) {
+				final Element evtJury = getPersonElement(document, person);
+				evtJurys.appendChild(evtJury);
+			}
+			evt.appendChild(evtJurys);
+
+			// document
+			final Element evtDocs = document.createElement("documents");
+			for (iut.app.Document doc : evtcurrent.getDocuments()) {
+				final Element evtDoc = document.createElement("document");
+				evtDoc.setAttribute("URI", doc.getDocumentURI());
+				evtDocs.appendChild(evtDoc);
+			}
+			evt.appendChild(evtDocs);
+			racine.appendChild(evt);
+		}
+
+        final TransformerFactory transformerFactory = TransformerFactory
+                .newInstance();
+        final Transformer transformer = transformerFactory.newTransformer();
+        final DOMSource input = new DOMSource(document);
+        final StreamResult output = new StreamResult(new File(
+                System.getProperty("user.dir") + "/" + xmlfile));
+
+        transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(
+                "{http://xml.apache.org/xslt}indent-amount", "2");
+
+        transformer.transform(input, output);
+    }
+
+    private static Element getPersonElement(Document document, Person person) {
+        final Element personE = document.createElement("person");
+        personE.setAttribute("function", person.getFunction().toString());
+        personE.setAttribute("firstname", person.getFirstname());
+        personE.setAttribute("lastname", person.getLastname());
+        personE.setAttribute("email", person.getEmail());
+        personE.setAttribute("phone", person.getPhone());
+        return personE;
+    }
+}
+
+

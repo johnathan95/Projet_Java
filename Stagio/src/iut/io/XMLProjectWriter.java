@@ -1,4 +1,5 @@
 package iut.io;
+
 /**
  * <p>
  * Nom de l'application : STAGIO gestionnaire de stage
@@ -15,6 +16,7 @@ import java.util.LinkedList;
 
 import iut.app.CommandLineParser;
 import iut.app.ExamEvent;
+import iut.app.Person;
 
 import java.beans.XMLEncoder;
 import java.io.File;
@@ -36,7 +38,7 @@ import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-//EX 1 Completer la classe 
+ 
 
 public class XMLProjectWriter {
 
@@ -44,7 +46,8 @@ public class XMLProjectWriter {
 
 	}
 
-	public void save(LinkedList<ExamEvent> data, java.io.File xmlfile) {
+	public void save(LinkedList<ExamEvent> data, java.io.File xmlfile)
+			throws TransformerException, ParserConfigurationException {
 		/*
 		 * CommandLineParser clp = new CommandLineParser(); String[] FILE =
 		 * null; clp.parse(FILE); StreamResult result = new StreamResult(new
@@ -63,69 +66,73 @@ public class XMLProjectWriter {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-/*
+
 		// récupération d'une instance de la classe "DocumentBuilderFactory"
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		// création d'un parseur
+		final DocumentBuilder builder = factory.newDocumentBuilder();
+		// création d'un Document
+		final Document document = builder.newDocument();
 
-		try {
-			// création d'un parseur
+		final Element racine = document.createElement("agenda");
+		document.appendChild(racine);
 
-			final DocumentBuilder builder = factory.newDocumentBuilder();
+		for (ExamEvent evtcurrent : data) {
 
-			// création d'un Document
+			final Element evt = document.createElement("event");
+			evt.setAttribute("date",
+					String.valueOf(evtcurrent.getDate().getTime()));
+			evt.setAttribute("classroom", evtcurrent.getClassroom()
+					.getClassRoomNumber());
 
-			final Document document = builder.newDocument();
+			// L'ajout de l'étudiant
+			final Element student = getPersonInfos(document,
+					evtcurrent.getStudent());
+			evt.appendChild(student);
 
-			// création de l'Element racine
-
-			final Element racine = document.createElement("agenda");
-			document.appendChild(racine);
-			for (int evt = 0; evt < 5; evt++) {
-
-				// création d'une personne
-
-				final Comment comment = document.createComment("Bruce WAYNE");
-				racine.appendChild(comment);
-
-				final Element event = document.createElement("date");
-				event.setAttribute("public", "yes");
-				event.setAttribute("id", "" + evt);
-				event.setAttribute("date", "2016-06-23 " + (14 + evt) + ":00");
-				event.setAttribute("duration", "2:00:00");
-				racine.appendChild(event);
-
-				// création du nom et du prénom
-
-				final Element nom = document.createElement("nom");
-				nom.appendChild(document.createTextNode("WAYNE"));
-
-				final Element prenom = document.createElement("prenom");
-				prenom.appendChild(document.createTextNode("Bruce"));
-
-				prenom.appendChild(nom);
-				prenom.appendChild(prenom);
-
-				for (ExamEvent d : data) {
-					Element eventTitle = document.createElement("jury");
-					eventTitle.appendChild(document.createTextNode("JURY "
-							+ d.getJury()));
-
-				}
+			// L'ajout du jury
+			final Element evtJurys = document.createElement("jurys");
+			for (Person person : evtcurrent.getJury()) {
+				final Element evtJury = getPersonInfos(document, person);
+				evtJurys.appendChild(evtJury);
 			}
-		} catch (ParserConfigurationException pce) {
-			pce.printStackTrace();
+			evt.appendChild(evtJurys);
+
+			// document
+			final Element evtDocs = document.createElement("documents");
+			for (iut.app.Document doc : evtcurrent.getDocuments()) {
+				final Element evtDoc = document.createElement("document");
+				evtDoc.setAttribute("URI", doc.getDocumentURI());
+				evtDocs.appendChild(evtDoc);
+			}
+			evt.appendChild(evtDocs);
+			racine.appendChild(evt);
 		}
 
-		
-		  TransformerFactory transformerFactory =
-		 TransformerFactory.newInstance(); Transformer transformer =
-		 transformerFactory.newTransformer(); DOMSource source = new
-		 DOMSource(document); StreamResult output = new StreamResult(new
-		 File(System.getProperty("user.home")+"/save.xml"));
-		 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		 transformer.setOutputProperty
-		 ("{http://xml.apache.org/xslt}indent-amount", "2");
-		 transformer.transform(source, output);
-		 */
+		final TransformerFactory transformerFactory = TransformerFactory
+				.newInstance();
+		final Transformer transformer = transformerFactory.newTransformer();
+		final DOMSource input = new DOMSource(document);
+		final StreamResult output = new StreamResult(new File(
+				System.getProperty("user.dir") + "/" + xmlfile));
+
+		transformer.setOutputProperty(OutputKeys.VERSION, "1.0");
+		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty(
+				"{http://xml.apache.org/xslt}indent-amount", "2");
+
+		transformer.transform(input, output);
+	}
+
+	private static Element getPersonInfos(Document document, Person person) {
+		final Element pi = document.createElement("person");
+		pi.setAttribute("function", person.getFunction().toString());
+		pi.setAttribute("firstname", person.getFirstname());
+		pi.setAttribute("lastname", person.getLastname());
+		pi.setAttribute("email", person.getEmail());
+		pi.setAttribute("phone", person.getPhone());
+		return pi;
 	}
 }

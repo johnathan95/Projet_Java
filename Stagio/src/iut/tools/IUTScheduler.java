@@ -44,6 +44,7 @@ public class IUTScheduler {
 				+ commandLineParser.getOption("config").getValue());
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				//JFrame pwdFrame = new iut.gui.frames.;
 				JFrame mainFrame = new iut.gui.frames.SchedulerFrame(
 						"STAGIO - gestionnaire de stages  | IUT d'Orsay");
 				mainFrame.setVisible(true);

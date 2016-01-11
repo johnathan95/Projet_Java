@@ -28,6 +28,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import iut.app.ApplicationSession;
 import iut.gui.listeners.*;
@@ -115,8 +117,14 @@ public class SchedulerFrame extends JFrame {
 					}
 
 					XMLProjectWriter xmltools = new XMLProjectWriter();
-					xmltools.save(ApplicationSession.instance().getAgenda1(),
-							fileToSave);
+					try {
+						xmltools.save(ApplicationSession.instance().getAgenda1(),
+								fileToSave);
+					} catch (TransformerException
+							| ParserConfigurationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					JOptionPane.showMessageDialog(null, "Saved");
 
 				}
