@@ -39,7 +39,11 @@ public class AgendaPanelFactory {
 	
 	public AgendaPanelFactory() {
 	}
-	
+	/**
+	 * Retourne une initialisation de la vue, en renseignant le parametre de type ActiveView
+	 * @param activeView
+	 * @return JPanel
+	 */
 	public JPanel getAgendaView(ActiveView activeView) {
 		JPanel agendaView = null;
 		switch (activeView) {
@@ -52,7 +56,8 @@ public class AgendaPanelFactory {
 				agendaView = weekPanel;
 				break;
 			case DAY_VIEW:
-				DayPanel dayPanel = new DayPanel(activeView,WeekDayNames.EMPTYDAY);
+				int monthDay = new GregorianCalendar().get(Calendar.DAY_OF_MONTH) % 7;
+				DayPanel dayPanel = new DayPanel(activeView, WeekDayNames.values()[monthDay+1]);
 				agendaView = dayPanel;
 				break;
 			default:

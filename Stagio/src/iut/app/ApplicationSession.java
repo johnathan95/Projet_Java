@@ -14,7 +14,10 @@ import java.util.ResourceBundle;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+/**
+ * Classe du design pattern Singleton.
+ * Un seul objet ApplicationSession peut être créer
+ */
 public class ApplicationSession {
 	
 	protected ResourceBundle resourceBundle;
@@ -48,7 +51,11 @@ public class ApplicationSession {
 		
 	}
 	
-	
+	/**
+	 * Fonction de type le singleton ApplicationSession.
+	 * Elle retourne une instance de ApplicationSession ou en creer une si elle n'existe pas 
+	 * @return ApplicationSession
+	 */
 	static public ApplicationSession instance() {
 		if (session == null) {			
 			session = new ApplicationSession();
@@ -68,7 +75,10 @@ public class ApplicationSession {
 	public Logger getExceptionLogger() {
 		return sessionExceptionLogger;
 	}
-	
+	/**
+	 * Procédure permettant de changer l'attribut locale et aussi elle permet de changer la langue de l'application 
+	 * @param locale
+	 */
 	public void setLocale(Locale locale){
 		this.locale = locale;
 		Locale.setDefault(this.locale);

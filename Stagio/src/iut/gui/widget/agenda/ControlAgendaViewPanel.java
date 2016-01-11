@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JSpinner;
 import javax.swing.JPanel;
@@ -34,13 +35,19 @@ public class ControlAgendaViewPanel extends JPanel {
 	int selectedYear;
 	int selectedMonth;
 	int selectedDay;
-	
+	/**
+	 * Constructeur de l'objet ControlAgendaViewPanel.
+	 * Ce constructeur créer deux ComboBox et un Spinner
+	 * @param layerLayout
+	 * @param contentPane
+	 */
 	public ControlAgendaViewPanel(CardLayout layerLayout, final JPanel contentPane) {
 
 		this.agendaViewLayout = layerLayout;
 		this.contentPane = contentPane;
 		JPanel commandPanel = new JPanel();
 		JPanel bottom = new JPanel();
+		JButton btnWebSite = new JButton();
 		commandPanel.setLayout(new BoxLayout(commandPanel, BoxLayout.PAGE_AXIS));
 		Calendar calendar = Calendar.getInstance();
         SpinnerNumberModel dateModel = new SpinnerNumberModel(calendar.get(Calendar.YEAR),
@@ -51,16 +58,12 @@ public class ControlAgendaViewPanel extends JPanel {
         yearsSpinner.setEditor(new JSpinner.NumberEditor(yearsSpinner, "#"));
 		JComboBox monthComboBox      = new JComboBox(ApplicationSession.instance().getMonths());
 		JComboBox daysOfWeekComboBox = new JComboBox(ApplicationSession.instance().getDays());
-		/*nextView.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				agendaViewLayout.next(contentPane);				
-			}			
-		});*/
 		commandPanel.add(yearsSpinner);
 		commandPanel.add(monthComboBox);
 		commandPanel.add(daysOfWeekComboBox);
+		commandPanel.add(btnWebSite);
+		
 		this.add(commandPanel, BorderLayout.CENTER);
         this.add(bottom, BorderLayout.PAGE_END);
 	}
