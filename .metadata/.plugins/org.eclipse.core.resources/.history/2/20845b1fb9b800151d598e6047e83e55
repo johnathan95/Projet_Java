@@ -38,22 +38,14 @@ import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+ 
+
 public class XMLProjectWriter {
 
 	public XMLProjectWriter() {
 
 	}
-	
-	private static Element getPersonInfos(Document document, Person person) {
-		final Element pi = document.createElement("person");
-		pi.setAttribute("function", person.getFunction().toString());
-		pi.setAttribute("firstname", person.getFirstname());
-		pi.setAttribute("lastname", person.getLastname());
-		pi.setAttribute("email", person.getEmail());
-		pi.setAttribute("phone", person.getPhone());
-		return pi;
-	}
-	
+
 	public void save(LinkedList<ExamEvent> data, java.io.File xmlfile)
 			throws TransformerException, ParserConfigurationException {
 		/*
@@ -74,7 +66,7 @@ public class XMLProjectWriter {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-/*
+
 		// récupération d'une instance de la classe "DocumentBuilderFactory"
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		// création d'un parseur
@@ -130,8 +122,17 @@ public class XMLProjectWriter {
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.setOutputProperty(
 				"{http://xml.apache.org/xslt}indent-amount", "2");
-		transformer.transform(input, output);*/
+
+		transformer.transform(input, output);
 	}
 
-	
+	private static Element getPersonInfos(Document document, Person person) {
+	final Element pi = document.createElement("person");
+	pi.setAttribute("function", person.getFunction().toString());
+	pi.setAttribute("firstname", person.getFirstname());
+	pi.setAttribute("lastname", person.getLastname());
+	pi.setAttribute("email", person.getEmail());
+	pi.setAttribute("phone", person.getPhone());
+	return pi;
+	}
 }

@@ -74,7 +74,7 @@ public class XMLProjectWriter {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-/*
+
 		// récupération d'une instance de la classe "DocumentBuilderFactory"
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		// création d'un parseur
@@ -130,7 +130,7 @@ public class XMLProjectWriter {
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.setOutputProperty(
 				"{http://xml.apache.org/xslt}indent-amount", "2");
-		transformer.transform(input, output);*/
+		transformer.transform(input, output);
 	}
 
 	
